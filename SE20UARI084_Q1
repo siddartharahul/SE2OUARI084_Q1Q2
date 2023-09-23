@@ -1,0 +1,122 @@
+processes = [
+    (24, 3, 2),
+    (4, 3, 3),
+    (5, 3, 1),
+    (6, 3, 4)
+]
+
+def fcfs(processes):
+    n = len(processes)
+    waiting_time = [0] * n
+    turnaround_time = [0] * n
+
+    waiting_time[0] = 0
+    for i in range(1, n):
+        waiting_time[i] = waiting_time[i - 1] + processes[i - 1][1]
+    
+    for i in range(n):
+        turnaround_time[i] = waiting_time[i] + processes[i][1]
+
+    return waiting_time, turnaround_time
+
+def sjf(processes):
+    n = len(processes)
+    waiting_time = [0] * n
+    turnaround_time = [0] * n
+
+    processes.sort(key=lambda x: x[1])
+
+    waiting_time[0] = 0
+    for i in range(1, n):
+        waiting_time[i] = waiting_time[i - 1] + processes[i - 1][1]
+    
+    for i in range(n):
+        turnaround_time[i] = waiting_time[i] + processes[i][1]
+
+    return waiting_time, turnaround_time
+
+def ps(processes):
+    n = len(processes)
+    waiting_time = [0] * n
+    turnaround_time = [0] * n
+
+    processes.sort(key=lambda x: x[2])
+
+    waiting_time[0] = 0
+    for i in range(1, n):
+        waiting_time[i] = waiting_time[i - 1] + processes[i - 1][1]
+    
+    for i in range(n):
+        turnaround_time[i] = waiting_time[i] + processes[i][1]
+
+    return waiting_time, turnaround_time
+
+def rr(processes, time_quantum):
+    n = len(processes)
+    waiting_time = [0] * n
+    turnaround_time = [0] * n
+
+    time = 0
+    remaining_burst_time = [process[1] for process in processes]
+
+    while True:
+        done = True
+        for i in range(n):
+            if remaining_burst_time[i] > 0:
+                done = False
+                if remaining_burst_time[i] > time_quantum:
+                    time += time_quantum
+                    remaining_burst_time[i] -= time_quantum
+                else:
+                    time += remaining_burst_time[i]
+                    waiting_time[i] = time - processes[i][1]
+                    remaining_burst_time[i] = 0
+
+        if done:
+            break
+
+    for i in range(n):
+        turnaround_time[i] = waiting_time[i] + processes[i][1]
+
+    return waiting_time, turnaround_time
+
+def calculate_average(times):
+    n = len(times)
+    total = sum(times)
+    return total / n
+
+fcfs_waiting, fcfs_turnaround = fcfs(processes)
+sjf_waiting, sjf_turnaround = sjf(processes)
+ps_waiting, ps_turnaround = ps(processes)
+rr_waiting, rr_turnaround = rr(processes, 4)
+
+average_fcfs_waiting = calculate_average(fcfs_waiting)
+average_fcfs_turnaround = calculate_average(fcfs_turnaround)
+average_sjf_waiting = calculate_average(sjf_waiting)
+average_sjf_turnaround = calculate_average(sjf_turnaround)
+average_ps_waiting = calculate_average(ps_waiting)
+average_ps_turnaround = calculate_average(ps_turnaround)
+average_rr_waiting = calculate_average(rr_waiting)
+average_rr_turnaround = calculate_average(rr_turnaround)
+
+print("FCFS Waiting Times:", fcfs_waiting)
+print("FCFS Turnaround Times:", fcfs_turnaround)
+print("Average FCFS Waiting Time:", average_fcfs_waiting)
+print("Average FCFS Turnaround Time:", average_fcfs_turnaround)
+print()
+print("SJF Waiting Times:", sjf_waiting)
+print("SJF Turnaround Times:", sjf_turnaround)
+print("Average SJF Waiting Time:", average_sjf_waiting)
+print("Average SJF Turnaround Time:", average_sjf_turnaround)
+print()
+print("PS Waiting Times:", ps_waiting)
+print("PS Turnaround Times:", ps_turnaround)
+print("Average PS Waiting Time:", average_ps_waiting)
+print("Average PS Turnaround Time:", average_ps_turnaround)
+print()
+print("RR Waiting Times:", rr_waiting)
+print("RR Turnaround Times:", rr_turnaround)
+print("Average RR Waiting Time:", average_rr_waiting)
+print("Average RR Turnaround Time:", average_rr_turnaround)
+
+#THE BEST APPROACH IS RR

@@ -1,0 +1,35 @@
+
+patients = [
+    (0, 30, 3),
+    (10, 20, 5),
+    (15, 40, 2),
+    (20, 15, 4)
+]
+
+def fcfs_schedule(patients):
+    return sorted(patients, key=lambda x: x[0])
+
+def sjf_schedule(patients):
+    return sorted(patients, key=lambda x: x[1])
+
+def ps_schedule(patients):
+    return sorted(patients, key=lambda x: (-x[2], x[0]))
+
+def rr_schedule(patients, time_quantum):
+    queue = patients.copy()
+    schedule = []
+    while queue:
+        patient = queue.pop(0)
+        if patient[1] > time_quantum:
+            schedule.append((patient[0], time_quantum))
+            queue.append((patient[0], patient[1] - time_quantum, patient[2]))
+        else:
+            schedule.append((patient[0], patient[1]))
+    return schedule
+
+print("FCFS Schedule:", fcfs_schedule(patients))
+print("SJF Schedule:", sjf_schedule(patients))
+print("PS Schedule:", ps_schedule(patients))
+print("RR Schedule (Time Quantum 15):", rr_schedule(patients, 15))
+
+#THE BEST APPROACH IS SJF
